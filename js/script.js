@@ -1,7 +1,8 @@
+// Job input Selectors and styles
 let jobInput = document.querySelector('#other-title');
 let jobSelect = document.querySelector('#title');
-
 jobInput.style.display = 'none';
+
 
 
 /**
