@@ -160,6 +160,64 @@ activityLabel.addEventListener('change', (e) => {
 });
 
 
+// -------------------------
+// PAYMENTS OPTIONS SELECTORS AND FUNCTIONS
+// -------------------------
+let paymentOptions = document.querySelector('#payment');
+
+/**
+ * Object that represents the payment option
+ */
+let payments = {
+    // sections
+    creditCard: { 
+        section: document.querySelector('#credit-card')
+    }, 
+    paypal: {
+        section: document.querySelector('#paypal')
+    },
+    bitcoin: {
+        section: document.querySelector('#bitcoin')
+    },
+    /**
+     * Init method to start the sections
+     */
+    init: () => {
+        payments.paypal.section.style.display = 'none';
+        payments.bitcoin.section.style.display = 'none';
+    },
+    /**
+     * On every change of select option, it will update object 
+     * @param {event} e event triggered on changed
+     */
+    update: e => {
+        if (e.target.value === 'credit card') {
+            payments.updateDisplay(payments.creditCard, [payments.paypal, payments.bitcoin]);
+        } else if (e.target.value === 'paypal') {
+            payments.updateDisplay(payments.paypal, [payments.creditCard, payments.bitcoin]);
+        } else if (e.target.value === 'bitcoin') {
+            payments.updateDisplay(payments.bitcoin, [payments.creditCard, payments.paypal])
+        }
+    }, 
+    /**
+     * updates display of every section
+     * @param {object} showSection section to be shown
+     * @param {object []} hideSections sections to be hidden
+     */
+    updateDisplay: (showSection, hideSections) => {
+        showSection.section.style.display = 'block';
+        hideSections.forEach(section => {
+            section.section.style.display = 'none';
+        })
+    }
+    
+
+}
+
+payments.init();
+paymentOptions.addEventListener('change', e => {
+    payments.update(e);
+})
 
 // -------------------------
 // CUSTOMIZED OPTIONS
