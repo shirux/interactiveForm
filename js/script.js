@@ -347,10 +347,10 @@ const paymentsSection = {
             // If credit card values match regex, add error classes and returns true
             if (paymentsSection.validateInfo(creditInput, regexInfo, labels, errorsPopups)) {  
                 return true;
-            } else { // Otherwise it will add error classes
-                return false;
-            }
+            } 
+            return false;
         }
+        return true;
     },
     /**
      * Validates credit card info with regex. On error, display error message
@@ -420,12 +420,11 @@ const validations = {
         validations.submit.addEventListener('click', e => {
             const nameCrit = nameSection.validate();
             const emailCrit = emailSection.validate();
-            const shirtCrit = shirtSection.validate();
+            // const shirtCrit = shirtSection.validate();
             const activityCrit = activitySection.validate();
             const paymentsCrit = paymentsSection.validate();
-            if (!(nameCrit && emailCrit && shirtCrit && activityCrit && paymentsCrit)) {
+            if (!(nameCrit && emailCrit && activityCrit && paymentsCrit)) {
                 e.preventDefault();
-                validations.addOnlineValidations();     
             }
         });
     },
@@ -439,9 +438,9 @@ const validations = {
         emailSection.input.addEventListener('input', e => {
             emailSection.validate();
         });
-        shirtSection.select.addEventListener('change', e => {
-            shirtSection.validate();
-        });
+        // shirtSection.select.addEventListener('change', e => {
+        //     shirtSection.validate();
+        // });
         activitySection.label.addEventListener('change', e => {
             activitySection.validate();
         })
@@ -453,6 +452,7 @@ const validations = {
 
 // Start the validations
 validations.init();
+validations.addOnlineValidations();
 
 
 // -------------------------
