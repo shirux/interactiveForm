@@ -119,23 +119,15 @@ jobSection.init();
 
 
 // Shirt options
-const jsPunsOptions = ['Cornflower Blue (JS Puns shirt only)', 'Dark Slate Grey (JS Puns shirt only)', 'Gold (JS Puns shirt only)'];
-const heartJsOptions = ['Tomato (I &#9829; JS shirt only)', 'Steel Blue (I &#9829; JS shirt only)', 'Dim Grey (I &#9829; JS shirt only)'];
+// TODO insert this again on html
+const jsPunsOptions = [0, 1, 2];
+const heartJsOptions = [3, 4, 5];
 
 const shirtSection =  {
     select: document.querySelector('#design'),
     div: document.querySelector('#colors-js-puns'),
-    color: document.querySelector('#color'), 
-    /**
-     * Updates the color options select
-     * @param {array} array options values to be added on select
-     */
-    updateValues: array => {
-        shirtSection.color.innerHTML = '';
-        array.forEach(optionValue => {
-            shirtSection.color.appendChild(createTagElement('option', optionValue));
-        });
-    },
+    color: document.querySelector('#color'),
+    colorOptions: document.querySelectorAll('#color option'),
     /**
      * Receives an event and depending on target event, triggers inner functions
      * @param {event} e event triggered on function call
@@ -143,33 +135,27 @@ const shirtSection =  {
     update: e => {
         if (e.target.value === 'Select Theme') {
             shirtSection.div.style.display = 'none';
-            shirtSection.updateValues([]);
+            shirtSection.changeDisplayOptions([]);
         } else if (e.target.value === 'heart js') {
             shirtSection.div.style.display = 'block';
-            shirtSection.updateValues(heartJsOptions);
+            shirtSection.changeDisplayOptions(heartJsOptions);
         } else if (e.target.value === 'js puns') {
             shirtSection.div.style.display = 'block';
-            shirtSection.updateValues(jsPunsOptions);
+            shirtSection.changeDisplayOptions(jsPunsOptions);
         }
     },
-    /**
-     * Validates shirt color selection
-     * @returns {boolean} Indicator if user selected a non empty color option
-     */
-    validate: () => {
-        const legend = document.querySelector('.shirt legend');
-        const popup = document.querySelector('#pop-up-shirt');
-        // Checks if shirt color is not empty
-        if (shirtSection.color.value === '') {
-            legend.classList.add('error-text');
-            popup.textContent = 'Please select a valid shirt design';
-            popup.style.display = 'inherit';
-            return false;
-        } else {
-            legend.classList.remove('error-text');
-            popup.textContent = '';
-            popup.style.display = 'none';
-            return true;
+    changeDisplayOptions: options => {
+        let selected = false;
+        for (let i = 0; i < shirtSection.colorOptions.length; i++) {
+            if (options.includes(i)) {
+                shirtSection.colorOptions[i].style.display = 'inherit';
+                if (!selected) {
+                    shirtSection.colorOptions[i].selected = true;
+                    selected = true;
+                }
+            } else {
+                shirtSection.colorOptions[i].style.display = 'none';
+            }
         }
     },
     /**
@@ -177,6 +163,9 @@ const shirtSection =  {
      */
     init: () => {
         shirtSection.div.style.display = 'none';
+        shirtSection.colorOptions.forEach(option => {
+            option.style.display = 'none';
+        })
         shirtSection.select.addEventListener('change', (e) => {
             shirtSection.update(e);
         });
@@ -319,6 +308,7 @@ const paymentsSection = {
      * Checks all credit card info
      * @returns {boolean} is credit card info valid
      */
+    // TODO VALIDATE EACH ONE DIFFERENT
     validate: () => {
         if (paymentsSection.div.value === 'credit card') {
             // Selectors
@@ -420,7 +410,6 @@ const validations = {
         validations.submit.addEventListener('click', e => {
             const nameCrit = nameSection.validate();
             const emailCrit = emailSection.validate();
-            // const shirtCrit = shirtSection.validate();
             const activityCrit = activitySection.validate();
             const paymentsCrit = paymentsSection.validate();
             if (!(nameCrit && emailCrit && activityCrit && paymentsCrit)) {
@@ -438,9 +427,6 @@ const validations = {
         emailSection.input.addEventListener('input', e => {
             emailSection.validate();
         });
-        // shirtSection.select.addEventListener('change', e => {
-        //     shirtSection.validate();
-        // });
         activitySection.label.addEventListener('change', e => {
             activitySection.validate();
         })
