@@ -144,6 +144,10 @@ const shirtSection =  {
             shirtSection.changeDisplayOptions(jsPunsOptions);
         }
     },
+    /**
+     * Updates the display of the color options
+     * @param {int []} options the positions of the options that must be shown 
+     */
     changeDisplayOptions: options => {
         let selected = false;
         for (let i = 0; i < shirtSection.colorOptions.length; i++) {
