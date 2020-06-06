@@ -327,9 +327,18 @@ const paymentsSection = {
                 document.querySelector('label[for=cvv]')
             ];
             const errorsPopups = [
-                'Credit card must contain 15 digits.',
-                'Zip code must contains 5 digits.',
-                'CVV must contains 3 digits.'
+                {
+                    field: 'Credit card',
+                    digits: '15'
+                },
+                {
+                    field: 'Zip code',
+                    digits: '5'
+                },
+                {
+                    field: 'CVV',
+                    digits: '3'
+                }
             ];
             // Regex
             const regexInfo = [
@@ -351,22 +360,21 @@ const paymentsSection = {
      * @param {HTMLElement[]} inputs Array of inputs to be validated
      * @param {regex[]} regex Array of regex to match against inputs
      * @param {HTMLElement[]} labels Array of label elements to update
-     * @param {errorPupups[]} errors Array of errors to display on every check
+     * @param {Object[]} errors Array of fields to display on every error
      */
     validateInfo: (inputs, regex, labels, errors) => {
         const popUp = document.querySelector('#pop-up-payment');
         let answer = true;
-        let popupChanged = false;
+        let popupChanged = [];
+        // Check every field on credit card
         for (let i = 0; i < inputs.length; i++) {
-            answer = answer && inputs[i].value.match(regex[i]);
-            if (!answer) {
+            if (!inputs[i].value.match(regex[i])) {
                 inputs[i].classList.add('error');
                 labels[i].classList.add('error-text');
-                if (!popupChanged) {
-                    popUp.textContent = errors[i];
-                    popUp.style.display = 'inherit';
-                    popupChanged = true;
-                }
+                let err = {};
+                err['field'] = errors[i].field;
+                err['digits'] = errors[i].digits;
+                popupChanged.push(err);
             } else {
                 inputs[i].classList.remove('error');
                 labels[i].classList.remove('error-text');
@@ -374,11 +382,34 @@ const paymentsSection = {
                 popUp.style.display = 'none';
             }
         }
-        if (answer) {
+        // Displays a message error concatenating every error field
+        if (popupChanged.length) {          
+            let first = false;
+            let fieldsConcatenation = '';
+            let digitsConcatenation = '';
+            for (let i = 0; i < popupChanged.length; i++) {
+                if (!first) {
+                    fieldsConcatenation = popupChanged[i]['field'];
+                    digitsConcatenation = popupChanged[i]['digits'];
+                    first = true;
+                } else {
+                    if (i === popupChanged.length - 1) {
+                        fieldsConcatenation += ` and ${popupChanged[i]['field']}`;
+                        digitsConcatenation += ` and ${popupChanged[i]['digits']}`;
+                    } else {
+                        fieldsConcatenation += `, ${popupChanged[i]['field']}`;
+                        digitsConcatenation += `, ${popupChanged[i]['digits']}`;
+                    }
+                }
+            }
+            popUp.textContent = `The field(s) ${fieldsConcatenation} must have ${digitsConcatenation} digit(s) respectively.`;
+            popUp.style.display = 'inherit';
+        }
+        else {
             popUp.textContent = '';
             popUp.style.display = 'none';
         }
-        return answer;
+        return answer = (popupChanged.length) ? false : true;
     }, 
     /**
      * Init method to start the sections
